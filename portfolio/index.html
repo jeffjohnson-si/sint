@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SINT — Solomon Islands Net Trade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --grey-50:  #f9fafb;
+      --grey-100: #f3f4f6;
+      --grey-200: #e5e7eb;
+      --grey-300: #d1d5db;
+      --grey-400: #9ca3af;
+      --grey-500: #6b7280;
+      --grey-600: #4b5563;
+      --grey-700: #374151;
+      --grey-800: #1f2937;
+      --grey-900: #111827;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ─── Navigation ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--grey-100);
+    }
+    .nav-logo {
+      font-size: 1.125rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .nav-logo span { color: var(--grey-400); font-weight: 400; }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--grey-600);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--black); }
+    .nav-cta {
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.5rem 1.25rem;
+      border: 1.5px solid var(--black);
+      border-radius: 6px;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-cta:hover { background: var(--black); color: var(--white); }
+
+    /* ─── Sections ─── */
+    section { padding: 6rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--grey-400);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1.0625rem;
+      color: var(--grey-500);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -10%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(ellipse at center, var(--grey-50) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--grey-500);
+      background: var(--grey-50);
+      border: 1px solid var(--grey-200);
+      padding: 0.35rem 0.875rem;
+      border-radius: 100px;
+      margin-bottom: 1.75rem;
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--black);
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--grey-300);
+    }
+    .hero-desc {
+      font-size: 1.125rem;
+      color: var(--grey-500);
+      max-width: 500px;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      background: var(--black);
+      color: var(--white);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.18); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      background: transparent;
+      color: var(--black);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1.5px solid var(--grey-200);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--black); background: var(--grey-50); }
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--grey-100);
+    }
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+    .stat-label { font-size: 0.8125rem; color: var(--grey-400); margin-top: 0.125rem; }
+
+    /* ─── Mockup ─── */
+    .mockup-section { background: var(--grey-50); }
+    .mockup-frame {
+      position: relative;
+      margin-top: 3rem;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--grey-200);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04);
+    }
+    .mockup-bar {
+      height: 40px;
+      background: var(--grey-100);
+      border-bottom: 1px solid var(--grey-200);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 0.5rem;
+    }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--grey-300); }
+    .mockup-body {
+      background: var(--white);
+      min-height: 420px;
+      display: flex;
+    }
+    .mockup-phone {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--grey-100);
+    }
+    .mockup-statusbar {
+      height: 28px;
+      background: var(--white);
+      border-bottom: 1px solid var(--grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      font-size: 0.625rem;
+      font-weight: 600;
+      color: var(--grey-500);
+    }
+    .mockup-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mockup-header-title { font-size: 0.9375rem; font-weight: 700; }
+    .mockup-header-icon { font-size: 1.25rem; }
+    .mockup-feed { flex: 1; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .mockup-post {
+      background: var(--white);
+      border: 1px solid var(--grey-100);
+      border-radius: 12px;
+      padding: 0.875rem;
+    }
+    .mockup-post-header {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 0.625rem;
+    }
+    .mockup-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--grey-100);
+      border: 1.5px solid var(--grey-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--grey-500);
+      flex-shrink: 0;
+    }
+    .mockup-post-meta { flex: 1; }
+    .mockup-post-name { font-size: 0.8125rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem; }
+    .mockup-verified { font-size: 0.75rem; }
+    .mockup-post-handle { font-size: 0.6875rem; color: var(--grey-400); }
+    .mockup-post-text { font-size: 0.8125rem; color: var(--grey-700); line-height: 1.5; margin-bottom: 0.5rem; }
+    .mockup-post-image {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--grey-100);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+    }
+    .mockup-post-actions { display: flex; gap: 1.25rem; }
+    .mockup-action-btn { font-size: 0.75rem; color: var(--grey-400); display: flex; align-items: center; gap: 0.3rem; }
+    .mockup-sidebar {
+      width: 220px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .mockup-sidebar-title { font-size: 0.75rem; font-weight: 700; color: var(--grey-400); text-transform: uppercase; letter-spacing: 0.06em; }
+    .mockup-suggestion {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+    .mockup-suggestion:hover { background: var(--grey-50); }
+    .mockup-suggestion-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--grey-100); display: flex; align-items: center; justify-content: center; font-size: 0.6875rem; font-weight: 700; color: var(--grey-500); flex-shrink: 0; }
+    .mockup-suggestion-name { font-size: 0.75rem; font-weight: 600; }
+    .mockup-suggestion-cat { font-size: 0.6875rem; color: var(--grey-400); }
+
+    /* ─── Features ─── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .feature-card {
+      border: 1px solid var(--grey-100);
+      border-radius: 14px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { border-color: var(--grey-300); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .feature-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--grey-50);
+      border: 1px solid var(--grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .feature-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .feature-desc { font-size: 0.875rem; color: var(--grey-500); line-height: 1.65; }
+
+    /* ─── Tech Stack ─── */
+    .stack-section { background: var(--grey-50); }
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+    .stack-card {
+      background: var(--white);
+      border: 1px solid var(--grey-200);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .stack-card-icon { font-size: 1.5rem; }
+    .stack-card-name { font-size: 0.9375rem; font-weight: 700; }
+    .stack-card-role { font-size: 0.8125rem; color: var(--grey-500); line-height: 1.5; }
+
+    /* ─── Architecture ─── */
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+    .arch-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.25rem 1.5rem;
+      border: 1.5px solid var(--grey-200);
+      border-radius: 10px;
+      background: var(--white);
+      min-width: 130px;
+    }
+    .arch-node-icon { font-size: 1.5rem; }
+    .arch-node-name { font-size: 0.8125rem; font-weight: 700; }
+    .arch-node-detail { font-size: 0.6875rem; color: var(--grey-400); text-align: center; }
+    .arch-arrow { font-size: 1.25rem; color: var(--grey-300); }
+
+    /* ─── Pricing ─── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .pricing-card {
+      border: 1.5px solid var(--grey-200);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+    }
+    .pricing-card.popular {
+      border-color: var(--black);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--black);
+      color: var(--white);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 0.25rem 0.875rem;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .pricing-name { font-size: 0.875rem; font-weight: 600; color: var(--grey-500); margin-bottom: 0.5rem; }
+    .pricing-price { font-size: 2.5rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 0.25rem; }
+    .pricing-price span { font-size: 1rem; font-weight: 500; color: var(--grey-400); }
+    .pricing-per { font-size: 0.8125rem; color: var(--grey-400); margin-bottom: 1.5rem; }
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 2rem; }
+    .pricing-features li { font-size: 0.875rem; color: var(--grey-600); display: flex; align-items: flex-start; gap: 0.5rem; }
+    .pricing-features li::before { content: '✓'; font-weight: 700; color: var(--black); flex-shrink: 0; margin-top: 1px; }
+    .pricing-btn {
+      width: 100%;
+      padding: 0.875rem;
+      border-radius: 8px;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border: 1.5px solid var(--grey-200);
+      background: transparent;
+      color: var(--black);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .pricing-card.popular .pricing-btn { background: var(--black); color: var(--white); border-color: var(--black); }
+    .pricing-card.popular .pricing-btn:hover { background: var(--grey-800); }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      background: var(--black);
+      color: var(--white);
+      text-align: center;
+    }
+    .cta-section .section-title { color: var(--white); }
+    .cta-section .section-sub { color: var(--grey-400); margin: 0 auto 2.5rem; }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2.5rem;
+      background: var(--white);
+      color: var(--black);
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,255,255,0.2); }
+
+    /* ─── Footer ─── */
+    footer {
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--grey-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-logo { font-size: 1rem; font-weight: 800; }
+    .footer-logo span { color: var(--grey-400); font-weight: 400; }
+    .footer-copy { font-size: 0.8125rem; color: var(--grey-400); }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero h1 { font-size: 2.75rem; }
+      .hero-stats { gap: 1.5rem; }
+      .mockup-sidebar { display: none; }
+      .arch-flow { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+      section { padding: 4rem 1.25rem; }
+      nav { padding: 0 1.25rem; }
+    }
+
+    /* ─── Animations ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- ─── Navigation ─── -->
+<nav>
+  <div class="nav-logo">SINT <span>/ Solomon Islands Net Trade</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stack">Tech Stack</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="mailto:hello@sint.sb"><button class="nav-cta">Contact</button></a>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        Portfolio Project — 2025
+      </div>
+      <h1>Every business<br>in the Solomon<br><em>Islands,</em> in one place.</h1>
+      <p class="hero-desc">
+        SINT is a Flutter mobile &amp; web app paired with a Node.js API — a business
+        directory and social feed built for scale, with subscription billing, real-time
+        interactions and interest-aware ranking.
+      </p>
+      <div class="hero-actions">
+        <a href="#features" class="btn-primary">Explore features →</a>
+        <a href="#stack" class="btn-secondary">See tech stack</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-value">3</div>
+          <div class="stat-label">Platforms — Flutter web, Android, iOS</div>
+        </div>
+        <div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">Services — Node.js API + MongoDB</div>
+        </div>
+        <div>
+          <div class="stat-value">14</div>
+          <div class="stat-label">API endpoints, JWT auth, rate limiting</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── App Mockup ─── -->
+<section class="mockup-section">
+  <div class="container">
+    <div class="section-label">App Preview</div>
+    <div class="section-title">Clean, fast, and built for the Pacific.</div>
+    <p class="section-sub">
+      A minimal black-and-white interface that loads fast on any connection. Feed
+      ranking, subscriptions, verified badges and messaging — all from the same codebase.
+    </p>
+    <div class="mockup-frame fade-up">
+      <div class="mockup-bar">
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+        <div class="mockup-dot"></div>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-phone">
+          <div class="mockup-statusbar">
+            <span>9:41</span>
+            <span>●●●● Wi-Fi</span>
+          </div>
+          <div class="mockup-header">
+            <div class="mockup-header-title">For You</div>
+            <div class="mockup-header-icon">🔍</div>
+          </div>
+          <div class="mockup-feed">
+            <div class="mockup-post">
+              <div class="mockup-post-header">
+                <div class="mockup-avatar">L</div>
+                <div class="mockup-post-meta">
+                  <div class="mockup-post-name">Lime Restaurant <span class="mockup-verified">✓</span></div>
+                  <div class="mockup-post-handle">Honiara · Food &amp; Drinks</div>
+                </div>
+              </div>
+              <div class="mockup-post-text">Fresh catch of the day — barracuda fillet with coconut rice. Available from 11am today. 🐟</div>
+              <div class="mockup-post-image"></div>
+              <div class="mockup-post-actions">
+                <div class="mockup-action-btn">♡ 24</div>
+                <div class="mockup-action-btn">💬 3</div>
+                <div class="mockup-action-btn">↗</div>
+              </div>
+            </div>
+            <div class="mockup-post">
+              <div class="mockup-post-header">
+                <div class="mockup-avatar">C</div>
+                <div class="mockup-post-meta">
+                  <div class="mockup-post-name">Coral Lodge <span class="mockup-verified">✓</span></div>
+                  <div class="mockup-post-handle">Gizo · Accommodations</div>
+                </div>
+              </div>
+              <div class="mockup-post-text">Weekend getaway special — book any ocean-view room this Saturday and get 20% off. DM us to reserve.</div>
+              <div class="mockup-post-actions">
+                <div class="mockup-action-btn">♡ 41</div>
+                <div class="mockup-action-btn">💬 7</div>
+                <div class="mockup-action-btn">↗</div>
+              </div>
+            </div>
+            <div class="mockup-post">
+              <div class="mockup-post-header">
+                <div class="mockup-avatar">T</div>
+                <div class="mockup-post-meta">
+                  <div class="mockup-post-name">Tours SI</div>
+                  <div class="mockup-post-handle">Honiara · Travel</div>
+                </div>
+              </div>
+              <div class="mockup-post-text">WW2 heritage tour this Monday — full day at Red Beach, Bonegi and Mount Austen. SBD 350/person. Limited seats.</div>
+              <div class="mockup-post-actions">
+                <div class="mockup-action-btn">♡ 18</div>
+                <div class="mockup-action-btn">💬 2</div>
+                <div class="mockup-action-btn">↗</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-sidebar">
+          <div class="mockup-sidebar-title">Suggested</div>
+          <div class="mockup-suggestion">
+            <div class="mockup-suggestion-avatar">J</div>
+            <div>
+              <div class="mockup-suggestion-name">Joyce Designs</div>
+              <div class="mockup-suggestion-cat">Freelance · Graphics</div>
+            </div>
+          </div>
+          <div class="mockup-suggestion">
+            <div class="mockup-suggestion-avatar">P</div>
+            <div>
+              <div class="mockup-suggestion-name">Pacific Hardware</div>
+              <div class="mockup-suggestion-cat">Retail · Home</div>
+            </div>
+          </div>
+          <div class="mockup-suggestion">
+            <div class="mockup-suggestion-avatar">S</div>
+            <div>
+              <div class="mockup-suggestion-name">SI Dive Co.</div>
+              <div class="mockup-suggestion-cat">Travel · Diving</div>
+            </div>
+          </div>
+          <div class="mockup-suggestion">
+            <div class="mockup-suggestion-avatar">M</div>
+            <div>
+              <div class="mockup-suggestion-name">Munda Grocer</div>
+              <div class="mockup-suggestion-cat">Retail · Food</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Features ─── -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">Features</div>
+    <div class="section-title">A full platform, not just a feed.</div>
+    <p class="section-sub">
+      Four account types, interest-aware ranking, subscription gating, verified badges,
+      direct messaging, and an offline payment flow — all production-ready.
+    </p>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title">Four Account Types</div>
+        <div class="feature-desc">
+          Users, businesses, companies and freelancers — each with the right
+          permissions. Only publishers see the Create Post tab; the rest get a
+          clean browse-only experience.
+        </div>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">📰</div>
+        <div class="feature-title">Interest-Aware Feed</div>
+        <div class="feature-desc">
+          New users pick categories at onboarding. Posts in those categories rank as
+          if up to 2 days newer — without filtering out everything else. Skipping the
+          form still shows all business posts.
+        </div>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">💳</div>
+        <div class="feature-title">Subscription &amp; Billing</div>
+        <div class="feature-desc">
+          Monthly (SBD 150) and yearly (SBD 1,500) plans with a 14-day free trial,
+          verified badge on yearly plans, and a boost that pushes posts higher in the
+          feed. Stripe-powered with an offline payment fallback for Solomon Islands.
+        </div>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Smart Search &amp; Suggestions</div>
+        <div class="feature-desc">
+          Keyword search maps everyday terms to categories ("food" → Food &amp; Drinks).
+          Suggestions rank by the viewer's search, follow, like, save and comment
+          history. Paid publishers always appear first.
+        </div>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">Direct Messaging</div>
+        <div class="feature-desc">
+          Real conversations between any account types. Messages carry text, images
+          and video. Notification badges refresh every 10 seconds via polling — no
+          websockets required.
+        </div>
+      </div>
+      <div class="feature-card fade-up">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">Security &amp; Rate Limiting</div>
+        <div class="feature-desc">
+          JWT access + refresh tokens, password reset flow, per-route rate limiting,
+          Stripe webhook signature verification, and MongoDB unique indexes preventing
+          payment replay attacks.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Tech Stack ─── -->
+<section id="stack" class="stack-section">
+  <div class="container">
+    <div class="section-label">Tech Stack</div>
+    <div class="section-title">Built to last, built to scale.</div>
+    <p class="section-sub">
+      Flutter on the front-end, Node.js Express 5 on the back-end, MongoDB for
+      persistence — with indexes, lean queries and disk-backed sorting ready for
+      thousands of users.
+    </p>
+    <div class="stack-grid">
+      <div class="stack-card fade-up">
+        <div class="stack-card-icon">🦋</div>
+        <div class="stack-card-name">Flutter</div>
+        <div class="stack-card-role">Cross-platform mobile &amp; web app using Provider for state management</div>
+      </div>
+      <div class="stack-card fade-up">
+        <div class="stack-card-icon">🟢</div>
+        <div class="stack-card-name">Node.js Express 5</div>
+        <div class="stack-card-role">ESM backend with per-route rate limiting, JWT middleware, and Stripe webhooks</div>
+      </div>
+      <div class="stack-card fade-up">
+        <div class="stack-card-icon">🍃</div>
+        <div class="stack-card-name">MongoDB + Mongoose 9</div>
+        <div class="stack-card-role">Compound indexes, lean queries, allowDiskUse on large sorts, autoIndex in dev only</div>
+      </div>
+      <div class="stack-card fade-up">
+        <div class="stack-card-icon">🔑</div>
+        <div class="stack-card-name">JWT Auth</div>
+        <div class="stack-card-role">Access + refresh token pair, stored in Flutter SecureStorage, auto-refresh on expiry</div>
+      </div>
+      <div class="stack-card fade-up">
+        <div class="stack-card-icon">📷</div>
+        <div class="stack-card-name">Multer 2</div>
+        <div class="stack-card-role">Image (up to 10) and video uploads served from local disk; swap in S3 in production</div>
+      </div>
+      <div class="stack-card fade-up">
+        <div class="stack-card-icon">⚡</div>
+        <div class="stack-card-name">Interest Ranking</div>
+        <div class="stack-card-role">MongoDB aggregation pipeline with boost windows and category interest scores</div>
+      </div>
+    </div>
+
+    <!-- Architecture flow -->
+    <div style="margin-top: 3rem; text-align: center;">
+      <div class="section-label">Architecture</div>
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="arch-node-icon">📱</div>
+          <div class="arch-node-name">Flutter App</div>
+          <div class="arch-node-detail">Web / Android / iOS</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">🌐</div>
+          <div class="arch-node-name">REST API</div>
+          <div class="arch-node-detail">Node.js + Express 5</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">🍃</div>
+          <div class="arch-node-name">MongoDB</div>
+          <div class="arch-node-detail">Atlas or local replica set</div>
+        </div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon">💳</div>
+          <div class="arch-node-name">Stripe / Offline</div>
+          <div class="arch-node-detail">Payments or bank transfer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Pricing ─── -->
+<section id="pricing">
+  <div class="container">
+    <div class="section-label">Subscriptions</div>
+    <div class="section-title">Simple, transparent pricing.</div>
+    <p class="section-sub">
+      Built for Solomon Islands businesses — affordable local pricing in SBD, with
+      a free trial to get started.
+    </p>
+    <div class="pricing-grid">
+      <div class="pricing-card fade-up">
+        <div class="pricing-name">Monthly</div>
+        <div class="pricing-price">SBD 150 <span>/mo</span></div>
+        <div class="pricing-per">Billed monthly. Cancel any time.</div>
+        <ul class="pricing-features">
+          <li>Publish unlimited posts</li>
+          <li>Stay listed in the directory</li>
+          <li>Feed boost while subscribed</li>
+          <li>Suggested to new users</li>
+        </ul>
+        <button class="pricing-btn">Free 14-day trial</button>
+      </div>
+      <div class="pricing-card popular fade-up">
+        <div class="pricing-badge">Best value</div>
+        <div class="pricing-name">Yearly</div>
+        <div class="pricing-price">SBD 1,500 <span>/yr</span></div>
+        <div class="pricing-per">Two months free vs. monthly.</div>
+        <ul class="pricing-features">
+          <li>Everything in Monthly</li>
+          <li><strong>Verified badge</strong> on profile &amp; posts</li>
+          <li>Feed boost while subscribed</li>
+          <li>Price locked for 12 months</li>
+        </ul>
+        <button class="pricing-btn">Start free trial</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-label" style="color: var(--grey-500);">Ready to work together?</div>
+    <div class="section-title">Let's build something<br>for the Pacific.</div>
+    <p class="section-sub">
+      Whether you need a mobile app, a web platform, or a full-stack product —
+      I'm available for freelance and contract work.
+    </p>
+    <a href="mailto:hello@sint.sb" class="cta-btn">
+      Get in touch →
+    </a>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer>
+  <div class="footer-logo">SINT <span>/ Solomon Islands Net Trade</span></div>
+  <div class="footer-copy">Portfolio project — 2025. Built with Flutter, Node.js &amp; MongoDB.</div>
+</footer>
+
+<!-- ─── Scroll animations ─── -->
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.12 }
+  );
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
