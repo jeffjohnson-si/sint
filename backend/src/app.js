@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { config } from './config/env.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
+import { securityHeaders } from './middleware/securityHeaders.js';
 import { authRouter } from './routes/auth.js';
 import { commentsRouter } from './routes/comments.js';
 import { conversationsRouter } from './routes/conversations.js';
@@ -19,6 +20,7 @@ export function createApp() {
   const app = express();
 
   app.set('trust proxy', 1);
+  app.use(securityHeaders);
   app.use(
     cors({
       origin: config.corsOrigins.length > 0 ? config.corsOrigins : true,

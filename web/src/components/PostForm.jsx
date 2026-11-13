@@ -205,7 +205,7 @@ export function PostForm({
         <input
           ref={imageInput}
           type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
+          accept="image/jpeg,image/png"
           multiple
           hidden
           onChange={(event) => {
@@ -224,7 +224,9 @@ export function PostForm({
           }}
         />
       </div>
-      <span className="hint">Up to {MAX_IMAGES} photos or one video. 10 MB per photo, 50 MB per video.</span>
+      <span className="hint">
+        Up to {MAX_IMAGES} photos (JPG or PNG, 5 MB each) or one video (MP4, MOV or WebM).
+      </span>
 
       <div className="row wrap" style={{ gap: 10 }}>
         <label className="field" style={{ flex: 1, minWidth: 180 }}>

@@ -6,15 +6,15 @@
  * here is the cheapest bandwidth win available: the upload is smaller, the feed
  * loads faster for everyone else, and server storage lasts longer.
  *
- * Videos and animated GIFs are passed through untouched — re-encoding those in
- * the browser would either lose the animation or need a much heavier pipeline.
+ * Videos are passed through untouched — re-encoding those in the browser would
+ * need a much heavier pipeline. GIFs are re-encoded like any other image: the
+ * API only stores JPG and PNG, so an animated GIF becomes its first frame.
  */
 
 const MAX_DIMENSION = 1600;
 const QUALITY = 0.82;
 /** Below this, compression saves little and risks visible softening. */
 const SKIP_BELOW_BYTES = 300 * 1024;
-const SKIP_TYPES = new Set(['image/gif']);
 
 function renamed(file) {
   const base = file.name.replace(/\.[^.]+$/, '') || 'photo';
@@ -22,7 +22,7 @@ function renamed(file) {
 }
 
 export async function compressImage(file, { maxDimension = MAX_DIMENSION, quality = QUALITY } = {}) {
-  if (!file || !file.type?.startsWith('image/') || SKIP_TYPES.has(file.type)) return file;
+  if (!file || !file.type?.startsWith('image/')) return file;
   if (file.size <= SKIP_BELOW_BYTES) return file;
   if (typeof createImageBitmap !== 'function') return file;
 

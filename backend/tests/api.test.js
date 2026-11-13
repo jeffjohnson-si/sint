@@ -165,6 +165,21 @@ describe('SINT API', () => {
     assert.equal(bad.status, 401);
   });
 
+  it('locks sign-in after five failed attempts and says how long to wait', async () => {
+    const email = 'throttle@test.sb';
+    const attempt = () =>
+      api('/auth/login', { method: 'POST', body: { email, password: 'wrong-password' } });
+
+    for (let index = 0; index < 5; index += 1) {
+      const failed = await attempt();
+      assert.equal(failed.status, 401, `attempt ${index + 1} should be a plain rejection`);
+    }
+
+    const blocked = await attempt();
+    assert.equal(blocked.status, 429);
+    assert.match(blocked.data.message, /Try again in \d+ minutes/);
+  });
+
   it('refreshes an expired session', async () => {
     const { status, data } = await api('/auth/refresh', {
       method: 'POST',

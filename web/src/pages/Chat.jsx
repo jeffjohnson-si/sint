@@ -223,7 +223,7 @@ export default function Chat() {
           <input
             ref={fileInput}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept="image/jpeg,image/png"
             multiple
             hidden
             onChange={attach}

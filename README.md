@@ -281,6 +281,33 @@ missing or still pointing at localhost. `npm run smoke` checks the live API:
 reachable, reads working, auth enforced, and the development shortcut returning
 404.
 
+## Security
+
+- **No secrets in the browser.** The web client only reads `VITE_API_BASE_URL`.
+  Every key (`DODO_*`, `SMTP_*`, `JWT_*`, `MONGO_URI`) stays in the API's `.env`.
+  `dist/` is scanned for key-shaped strings before shipping.
+- **Sign-in throttling.** Five failed attempts per 15 minutes, keyed by email
+  *and* IP. Successful sign-ins are not counted. The 429 carries the wait time
+  in the message and in `Retry-After`. `LOGIN_MAX_ATTEMPTS` overrides the five.
+- **Uploads are restricted.** JPG and PNG only, `MAX_IMAGE_MB` (5 MB) each, up
+  to 10 per post; video is MP4/MOV/WebM. The API also checks the first bytes of
+  every file, so a script or PDF renamed to `.jpg` is refused and deleted.
+- **Errors say nothing useful.** Failures return one friendly sentence; schema
+  names, duplicate keys, stack traces and driver messages are logged on the
+  server only. A 500 also returns a short `errorId` to quote in a bug report.
+- **Headers.** `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`,
+  a restrictive `Permissions-Policy`, `Cross-Origin-Opener-Policy`, plus
+  `Cache-Control: no-store` on `/api` so no shared cache keeps private data.
+  HSTS is added in production. The web app's CSP belongs in Caddy — see
+  `docs/deployment.md`.
+- **Auth cannot be forged with a header.** Identity comes only from a signed
+  bearer token; `X-User-Id`, `X-Forwarded-User` and similar are ignored.
+- **Database and storage stay private.** MongoDB listens on `127.0.0.1` in
+  development; in production use Atlas with auth + an IP allowlist, and never
+  open 27017. Uploads are served by the API (no directory listing, no traversal).
+  Bind the API to `127.0.0.1` behind the reverse proxy so `X-Forwarded-For`
+  cannot be spoofed to dodge the rate limits.
+
 ## Notes and limits
 
 - New shoppers pick categories in `InterestsScreen` (Flutter) or `/interests`

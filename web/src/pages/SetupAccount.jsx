@@ -90,7 +90,7 @@ export default function SetupAccount() {
             <input
               ref={coverInput}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
+              accept="image/jpeg,image/png"
               hidden
               onChange={(event) => {
                 pick(event.target.files?.[0], 'cover');
@@ -127,7 +127,7 @@ export default function SetupAccount() {
             <input
               ref={avatarInput}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
+              accept="image/jpeg,image/png"
               hidden
               onChange={(event) => {
                 pick(event.target.files?.[0], 'avatar');

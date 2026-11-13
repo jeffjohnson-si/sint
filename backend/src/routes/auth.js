@@ -1,6 +1,6 @@
 import crypto from 'node:crypto';
 import express from 'express';
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import { ACCOUNT_TYPES, PUBLISHER_TYPES, TRIAL_DAYS } from '../config/constants.js';
 import { config } from '../config/env.js';
 import { requireAuth } from '../middleware/auth.js';
@@ -13,9 +13,35 @@ import { sendResetCode, sendVerificationCode } from '../utils/email.js';
 
 export const authRouter = express.Router();
 
+const WINDOW_MS = 15 * 60 * 1000;
+
+/**
+ * Sign in: 5 failed attempts per 15 minutes, keyed by the email **and** the IP.
+ * Successful sign-ins are not counted, so a shared connection (an office, a
+ * cybercafe) cannot lock a whole building out. The 429 carries the wait time in
+ * the message and in `Retry-After`.
+ */
+const loginLimiter = rateLimit({
+  windowMs: WINDOW_MS,
+  limit: Number(process.env.LOGIN_MAX_ATTEMPTS ?? 5),
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  keyGenerator: (req) =>
+    `${ipKeyGenerator(req.ip)}:${String(req.body?.email ?? '').toLowerCase().trim()}`,
+  handler: (req, res, next, options) => {
+    const minutes = Math.ceil(options.windowMs / 60000);
+    res.setHeader('Retry-After', String(Math.ceil(options.windowMs / 1000)));
+    res.status(429).json({
+      message: `Too many sign-in attempts. Try again in ${minutes} minutes.`,
+    });
+  },
+});
+
+/** Everything else under /auth: generous, but still bounded. */
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: config.isProd ? 20 : 1000,
+  windowMs: WINDOW_MS,
+  limit: config.isProd ? 30 : 1000,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: { message: 'Too many attempts, please try again later' },
@@ -161,7 +187,7 @@ authRouter.post('/signup', authLimiter, async (req, res) => {
   res.status(201).json(payload);
 });
 
-authRouter.post('/login', authLimiter, async (req, res) => {
+authRouter.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body ?? {};
   const user = await User.findOne({ email: String(email ?? '').toLowerCase().trim() }).select(
     '+passwordHash',

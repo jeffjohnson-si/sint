@@ -29,7 +29,7 @@ export const config = {
     .map((origin) => origin.trim())
     .filter(Boolean),
   uploadDir: path.resolve(rootDir, process.env.UPLOAD_DIR ?? 'uploads'),
-  maxImageBytes: Number(process.env.MAX_IMAGE_MB ?? 10) * 1024 * 1024,
+  maxImageBytes: Number(process.env.MAX_IMAGE_MB ?? 5) * 1024 * 1024,
   maxVideoBytes: Number(process.env.MAX_VIDEO_MB ?? 50) * 1024 * 1024,
   maxImagesPerPost: 10,
   publicBaseUrl: (process.env.PUBLIC_BASE_URL ?? `http://localhost:${process.env.PORT ?? 4000}`)

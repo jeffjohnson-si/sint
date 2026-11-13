@@ -138,7 +138,7 @@ export default function EditProfile() {
           <input
             ref={coverInput}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+              accept="image/jpeg,image/png"
             hidden
             onChange={(event) => {
               pickImage(event.target.files?.[0], 'cover');
@@ -170,7 +170,7 @@ export default function EditProfile() {
           <input
             ref={avatarInput}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+              accept="image/jpeg,image/png"
             hidden
             onChange={(event) => {
               pickImage(event.target.files?.[0], 'avatar');

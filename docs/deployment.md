@@ -195,6 +195,16 @@ which Caddy proxies. That also means no CORS in the browser.
 sint.yourdomain {
     encode gzip zstd
 
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy no-referrer
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        # React needs inline styles; everything else is same-origin.
+        Content-Security-Policy "default-src 'self'; img-src 'self' data: blob:; media-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+    }
+
     handle /api/* {
         reverse_proxy 127.0.0.1:4000
     }
@@ -214,6 +224,16 @@ sint.yourdomain {
 ```bash
 sudo systemctl reload caddy
 ```
+
+Two details that matter:
+
+- **Bind the API to localhost only.** The systemd unit runs `node src/server.js`
+  and Caddy proxies to `127.0.0.1:4000`. Do not open 4000 in the firewall:
+  `app.js` trusts one proxy hop, so a directly reachable API would let someone
+  spoof `X-Forwarded-For` and sidestep the IP rate limits.
+- **Raise the body limit** if you ever swap Caddy for nginx: its 1 MB default
+  silently rejects photo and video uploads (the API accepts 5 MB images and
+  50 MB video).
 
 Caddy fetches the TLS certificate automatically. Point the domain's DNS at the
 server first, ideally through Cloudflare (proxy on, SSL mode "Full (strict)").

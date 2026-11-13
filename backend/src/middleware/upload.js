@@ -5,11 +5,11 @@ import multer from 'multer';
 import { config } from '../config/env.js';
 import { badRequest } from '../utils/httpError.js';
 
+// Only the formats the app actually displays: JPG and PNG. Anything else —
+// including webp, gif, PDF, SVG — is refused at the door.
 const IMAGE_TYPES = new Map([
   ['image/jpeg', '.jpg'],
   ['image/png', '.png'],
-  ['image/webp', '.webp'],
-  ['image/gif', '.gif'],
 ]);
 
 const VIDEO_TYPES = new Map([

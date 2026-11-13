@@ -1,9 +1,17 @@
+import crypto from 'node:crypto';
 import mongoose from 'mongoose';
 import multer from 'multer';
-import { config } from '../config/env.js';
 import { HttpError } from '../utils/httpError.js';
 
-/** Central error translator: keeps stack traces out of API responses. */
+/**
+ * Every error leaves here as a short, friendly sentence.
+ *
+ * Details — schema names, duplicate keys, stack traces, driver messages — are
+ * logged on the server and never returned, so a failed request cannot be used
+ * to map the database or the code. The one exception is our own `code` tag
+ * (e.g. `subscription_required`), which the client needs and which says
+ * nothing about the implementation.
+ */
 export function errorHandler(error, req, res, next) {
   if (res.headersSent) {
     next(error);
@@ -11,14 +19,18 @@ export function errorHandler(error, req, res, next) {
   }
 
   if (error instanceof HttpError) {
-    res.status(error.status).json({ message: error.message, details: error.details });
+    const code = error.details?.code;
+    res.status(error.status).json({
+      message: error.message,
+      ...(code ? { details: { code } } : {}),
+    });
     return;
   }
 
   if (error instanceof multer.MulterError) {
     const message =
       error.code === 'LIMIT_FILE_SIZE'
-        ? 'File is too large'
+        ? 'That file is too large'
         : error.code === 'LIMIT_FILE_COUNT' || error.code === 'LIMIT_UNEXPECTED_FILE'
           ? 'Too many files'
           : 'Upload failed';
@@ -27,11 +39,9 @@ export function errorHandler(error, req, res, next) {
   }
 
   if (error instanceof mongoose.Error.ValidationError) {
+    console.error('Validation error on %s %s:', req.method, req.originalUrl, error.message);
     res.status(400).json({
-      message: 'Validation failed',
-      details: Object.fromEntries(
-        Object.entries(error.errors).map(([field, err]) => [field, err.message]),
-      ),
+      message: 'Some of the details are not valid. Please check and try again.',
     });
     return;
   }
@@ -46,12 +56,13 @@ export function errorHandler(error, req, res, next) {
     return;
   }
 
-  console.error('Unhandled error on %s %s', req.method, req.originalUrl, error);
-  res.status(500).json({ message: 'Something went wrong. Please try again.' });
+  // Anything unexpected: keep the stack private, give the user a short handle
+  // to quote when reporting it, and describe nothing.
+  const errorId = crypto.randomUUID().slice(0, 8);
+  console.error(`[${errorId}] Unhandled error on ${req.method} ${req.originalUrl}`, error);
+  res.status(500).json({ message: 'Something went wrong. Please try again.', errorId });
 }
 
 export function notFoundHandler(req, res) {
-  res.status(404).json({ message: `No route for ${req.method} ${req.originalUrl}` });
+  res.status(404).json({ message: 'Not found' });
 }
-
-export const isProdErrorLoggingEnabled = config.isProd;
