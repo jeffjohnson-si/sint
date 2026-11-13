@@ -124,7 +124,7 @@ sudo -u sint npm run sync-indexes
 ```
 NODE_ENV=production
 PORT=4000
-MONGO_URI=mongodb+srv://sint:<password>@cluster0.xxxxx.mongodb.net/sint?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://sint:<password>@cluster0.xxxxx.mongodb.net/sint?retryWrites=true&w=majority&authSource=admin
 JWT_SECRET=<64 random chars>
 JWT_REFRESH_SECRET=<different 64 random chars>
 CORS_ORIGINS=https://sint.yourdomain
