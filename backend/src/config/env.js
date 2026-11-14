@@ -68,11 +68,6 @@ export const config = {
    */
   billingEnforced: (process.env.BILLING_ENFORCED ?? 'true').toLowerCase() !== 'false',
 
-  /** Accounts allowed to approve offline payments. Compared case insensitively. */
-  adminEmails: (process.env.ADMIN_EMAILS ?? '')
-    .split(',')
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean),
 
   /** SMTP for email delivery (e.g. SendGrid, Mailgun, Gmail SMTP).
    *  Leave host blank to use nodemailer's test-transport in dev (logs to console). */

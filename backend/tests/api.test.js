@@ -12,9 +12,6 @@ process.env.MONGO_URI = process.env.TEST_MONGO_URI ?? 'mongodb://127.0.0.1:27017
 process.env.NODE_ENV = 'test';
 // The trial/paywall tests need enforcement on; development runs with it off.
 process.env.BILLING_ENFORCED = 'true';
-// Offline payments need a merchant code to be offered, and an admin to approve.
-process.env.OFFLINE_PAYMENT_CODE = '600123';
-process.env.ADMIN_EMAILS = 'admin@test.sb';
 
 const { createApp } = await import('../src/app.js');
 const { connectDb, disconnectDb } = await import('../src/config/db.js');

@@ -17,7 +17,6 @@ import { Conversation } from '../src/models/Conversation.js';
 import { Follow } from '../src/models/Follow.js';
 import { Message } from '../src/models/Message.js';
 import { Notification } from '../src/models/Notification.js';
-import { Payment } from '../src/models/Payment.js';
 import { Post } from '../src/models/Post.js';
 import { User } from '../src/models/User.js';
 import { VerificationCode } from '../src/models/VerificationCode.js';
@@ -33,7 +32,6 @@ const models = [
   Conversation,
   Message,
   VerificationCode,
-  Payment,
 ];
 const prune = process.argv.includes('--prune');
 

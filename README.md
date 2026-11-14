@@ -251,12 +251,11 @@ ends. Trial length lives in `backend/src/config/constants.js`.
 
 ### Offline payments
 
-There are none right now. Bank-transfer/cash activation was removed when the
-card flow was introduced: nothing uses the `Payment` model or `requireAdmin`
-middleware any more, and `POST /subscription/payments` returns 404 — there is a
-test asserting exactly that. If a Solomon Islands business cannot pay by card,
-bringing this back is the first thing to do; the model and the admin middleware
-are still in place.
+None. Bank-transfer/cash activation was removed along with the `Payment` model
+and the admin middleware when the card flow replaced it: `POST
+/subscription/payments` returns 404, and a test keeps it that way. If a Solomon
+Islands business cannot pay by card, that flow has to be built again from
+scratch.
 
 
 

@@ -56,20 +56,6 @@ export function requirePublisher(req, res, next) {
 }
 
 /**
- * Reviewing offline payments is limited to the addresses in ADMIN_EMAILS. With
- * none configured nobody is an admin, so an unset variable cannot accidentally
- * open the approval endpoints up.
- */
-export function requireAdmin(req, res, next) {
-  const email = req.user?.email?.toLowerCase();
-  if (!email || !config.adminEmails.includes(email)) {
-    next(forbidden('Only an administrator can do that'));
-    return;
-  }
-  next();
-}
-
-/**
  * Publishing needs a live trial or a paid plan — unless billing is not being
  * enforced (BILLING_ENFORCED=false), which is how v1 runs while card payments
  * are not on sale yet. Existing posts stay visible either way.
