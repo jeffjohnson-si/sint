@@ -23,7 +23,7 @@ const WINDOW_MS = 15 * 60 * 1000;
  */
 const loginLimiter = rateLimit({
   windowMs: WINDOW_MS,
-  limit: Number(process.env.LOGIN_MAX_ATTEMPTS ?? 5),
+  limit: config.loginMaxAttempts,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   skipSuccessfulRequests: true,

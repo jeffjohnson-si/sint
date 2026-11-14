@@ -68,6 +68,10 @@ export const config = {
    */
   billingEnforced: (process.env.BILLING_ENFORCED ?? 'true').toLowerCase() !== 'false',
 
+  /** Failed sign-in attempts allowed per 15 minutes, per email and IP. */
+  loginMaxAttempts: Number(process.env.LOGIN_MAX_ATTEMPTS ?? 5),
+
+
 
   /** SMTP for email delivery (e.g. SendGrid, Mailgun, Gmail SMTP).
    *  Leave host blank to use nodemailer's test-transport in dev (logs to console). */
