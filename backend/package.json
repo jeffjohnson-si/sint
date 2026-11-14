@@ -12,6 +12,7 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node scripts/seed.js",
+    "seed-media": "node scripts/make-seed-media.mjs",
     "check-env": "node scripts/check-env.js",
     "smoke": "node scripts/smoke.js",
     "test-email": "node scripts/test-email.js",

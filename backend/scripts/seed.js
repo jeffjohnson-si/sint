@@ -4,8 +4,17 @@
  *
  * Usage: npm run seed
  * Every demo account uses the password: password123
+ *
+ * Post artwork lives in backend/seed-media/ and is copied into the uploads
+ * folder on every run, so demo media is served by our own API. It used to point
+ * at picsum.photos, which is blocked on some networks and left the feed empty.
+ * If the uploads folder already holds videos, the seed attaches them too.
  */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { connectDb, disconnectDb } from '../src/config/db.js';
+import { config } from '../src/config/env.js';
 import { PUBLISHER_TYPES } from '../src/config/constants.js';
 import { Comment } from '../src/models/Comment.js';
 import { Conversation } from '../src/models/Conversation.js';
@@ -14,10 +23,41 @@ import { Message } from '../src/models/Message.js';
 import { Notification } from '../src/models/Notification.js';
 import { Post } from '../src/models/Post.js';
 import { User } from '../src/models/User.js';
+import { publicUrlFor } from '../src/middleware/upload.js';
 import { notify } from '../src/utils/notify.js';
 
 const DEMO_PASSWORD = 'password123';
-const image = (seed) => `https://picsum.photos/seed/${seed}/800/600`;
+const SEED_MEDIA_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'seed-media');
+
+/** Copies the bundled artwork into the uploads folder and returns its URLs. */
+function installSeedMedia() {
+  fs.mkdirSync(config.uploadDir, { recursive: true });
+  const files = fs
+    .readdirSync(SEED_MEDIA_DIR)
+    .filter((file) => file.endsWith('.png'))
+    .sort();
+  for (const file of files) {
+    const target = path.join(config.uploadDir, file);
+    if (!fs.existsSync(target)) fs.copyFileSync(path.join(SEED_MEDIA_DIR, file), target);
+  }
+  return files.map(publicUrlFor);
+}
+
+/** Any videos already sitting in the uploads folder, newest last. */
+function localVideos() {
+  try {
+    return fs
+      .readdirSync(config.uploadDir)
+      .filter((file) => /\.(mp4|mov|webm)$/i.test(file))
+      .sort()
+      .map(publicUrlFor);
+  } catch {
+    return [];
+  }
+}
+
+const images = installSeedMedia();
+const image = (index) => images[index % images.length];
 const days = (count) => new Date(Date.now() + count * 24 * 60 * 60 * 1000);
 
 /**
@@ -164,7 +204,7 @@ const postsByEmail = {
     {
       content:
         'Demo post — this account exists so the whole flow can be exercised end to end: publish, comment, message, subscribe.',
-      media: [{ type: 'image', url: image('sint-demo-1') }],
+      media: [{ type: 'image', url: image(0) }],
     },
     {
       content: 'Second demo post. Nothing here is real, so edit or delete it freely.',
@@ -174,7 +214,7 @@ const postsByEmail = {
   'lime@sint.sb': [
     {
       content: 'Fresh tuna poke bowls are back on the menu today. Come in before 2pm!',
-      media: [{ type: 'image', url: image('sint-lime-1') }],
+      media: [{ type: 'image', url: image(1) }],
     },
     {
       content: 'New opening hours: Monday to Saturday, 7am until 9pm. Sunday brunch from 8am.',
@@ -185,22 +225,22 @@ const postsByEmail = {
     {
       content: 'Weekend package: two nights, breakfast for two and airport transfers included.',
       media: [
-        { type: 'image', url: image('sint-coral-1') },
-        { type: 'image', url: image('sint-coral-2') },
+        { type: 'image', url: image(2) },
+        { type: 'image', url: image(3) },
       ],
     },
   ],
   'tours@sint.sb': [
     {
       content: 'Saturday dive charter to Bonegi has three seats left. Message us to book.',
-      media: [{ type: 'image', url: image('sint-tours-1') }],
+      media: [{ type: 'image', url: image(4) }],
       location: 'Bonegi Beach',
     },
   ],
   'glow@sint.sb': [
     {
       content: 'Bridal season is here. Book your trial before the end of the month for 20% off.',
-      media: [{ type: 'image', url: image('sint-glow-1') }],
+      media: [{ type: 'image', url: image(5) }],
     },
   ],
   'fitness@sint.sb': [
@@ -212,25 +252,42 @@ const postsByEmail = {
   'auki@sint.sb': [
     {
       content: 'Solar kits restocked: 200W panels, batteries and inverters ready for pickup in Auki.',
-      media: [{ type: 'image', url: image('sint-auki-1') }],
+      media: [{ type: 'image', url: image(6) }],
     },
   ],
   'wantok@sint.sb': [
     {
       content: 'Live band Friday night from 8pm. No cover charge before 9pm.',
-      media: [{ type: 'image', url: image('sint-wantok-1') }],
+      media: [{ type: 'image', url: image(7) }],
     },
   ],
   'joyce@sint.sb': [
     {
       content: 'Just finished a signage refresh for a Gizo guesthouse. Taking new work next week.',
       media: [
-        { type: 'image', url: image('sint-joyce-1') },
-        { type: 'image', url: image('sint-joyce-2') },
+        { type: 'image', url: image(8) },
+        { type: 'image', url: image(9) },
       ],
     },
   ],
 };
+
+// Video posts are only added when the uploads folder actually holds video
+// files, so the demo never references media that is not there.
+const videos = localVideos();
+if (videos.length) {
+  postsByEmail['lime@sint.sb'].push({
+    content: 'A short clip from the kitchen this morning — the tuna came in at dawn.',
+    media: [{ type: 'video', url: videos[0] }],
+  });
+  if (videos[1]) {
+    postsByEmail['tours@sint.sb'].push({
+      content: 'Footage from last weekend’s dive charter at Bonegi.',
+      media: [{ type: 'video', url: videos[1] }],
+      location: 'Bonegi Beach',
+    });
+  }
+}
 
 async function seed() {
   await connectDb();
@@ -250,8 +307,9 @@ async function seed() {
     const user = new User({
       ...account,
       contactEmail: account.email,
-      avatarUrl: image(`sint-avatar-${index}`),
-      coverUrl: account.accountType === 'user' ? '' : image(`sint-cover-${index}`),
+      // No avatar: the initials fallback looks cleaner than abstract artwork.
+      avatarUrl: '',
+      coverUrl: account.accountType === 'user' ? '' : image(index + 4),
     });
     if (PUBLISHER_TYPES.includes(account.accountType)) {
       user.subscription = { ...user.subscription.toObject(), ...(subscriptions[account.email] ?? defaultSubscription) };
